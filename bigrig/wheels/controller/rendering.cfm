@@ -13,25 +13,24 @@
 		//
 		// loc.folderName = Reverse(ListRest(Reverse(arguments.$name), "/"));
 		var loc = $getComponentInitInfo(name=arguments.$name, type=arguments.$type);;
-
 		if (arguments.$type == "partial") {
 			loc.fileName = Replace("_" & loc.fileName, "__", "_", "one"); // replaces leading "_" when the file is a partial
 		}
-		if (Left(arguments.$name, 1) == "/")
+		if (Left(arguments.$name, 1) == "/"){
 			loc.include = loc.include & loc.folderName & "/" & loc.fileName; // Include a file in a sub folder to views
-		else if (arguments.$name Contains "/")
+		}
+		else if (arguments.$name Contains "/"){
 			// loc.include = loc.include & "/" & variables.params.controller & "/" & loc.folderName & "/" & loc.fileName; // Include a file in a sub folder of the current controller
 			loc.include = loc.include & "/" & loc.controllerName & "/" & loc.folderName & "/" & loc.fileName; // Include a file in a sub folder of the current controller
-		else
+		}
+		else {
 			// loc.include = loc.include & "/" & variables.params.controller & "/" & loc.fileName; // Include a file in the current controller's view folder
 			loc.include = loc.include & "/" & loc.controllerName & "/" & loc.fileName; // Include a file in the current controller's view folder
+		}
 		//// :bigrig ////
 		
 		arguments.$template = loc.include;
-		if (arguments.$type == "partial") {
-			writeDump(loc);
-		}
-		try {
+		
 		if (arguments.$type == "partial")
 		{
 			loc.pluralizedName = pluralize(arguments.$name);
@@ -133,9 +132,6 @@
 						loc.returnValue = loc.returnValue & arguments.$spacer;
 				}
 			}
-		}
-		} catch(Any e) {
-			writeDump(e);abort;
 		}
 
 		if (!StructKeyExists(loc, "returnValue")){

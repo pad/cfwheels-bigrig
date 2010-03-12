@@ -71,11 +71,14 @@
 		
 		loc.folderName = Reverse(ListRest(Reverse(loc.fileName), "/"));
 		
-		if (ListLen(loc.fileName, "/") >= 2 AND ListLen(listGetAt(loc.controllerName, 1, "/"), ".") == 3) {
+		if (ListLen(loc.fileName, "/") >= 2) {
 			loc.controllerName = listGetAt(loc.controllerName, 1, "/");
-			loc.folderName = $getComponentName(loc.folderName);
+			
+			if(ListLen(loc.controllerName, ".") == 3) {
+				loc.folderName = $getComponentName(loc.folderName);
+			}
 			// extracts the file part of the path and replace ending ".cfm";
-			loc.fileName = loc.fileName = Spanexcluding(Reverse(ListFirst(Reverse(loc.fileName), "/")), ".") & ".cfm";;
+			loc.fileName = Spanexcluding(Reverse(ListFirst(Reverse(loc.fileName), "/")), ".") & ".cfm";;
 		}
 		
 		if(arguments.type == "partial") {
