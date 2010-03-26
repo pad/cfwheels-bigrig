@@ -1,25 +1,25 @@
 <cffunction name="addApp">
 	<cfargument name="name" type="string" required="true" hint="" />
-	<cfargument name="path" type="string" required="true" hint="Location of the package to make a mapping for." />
 	<cfargument name="keyWord" type="string" default="#arguments.name#" hint="" />
-	<cfargument name="multipleAppFolders" type="boolean" default="true" hint="" />
+	<cfargument name="path" type="string" default="" hint="Location of the package to make a mapping for." />
+	<cfargument name="singleAppFolder" type="string" default="" hint="" />
 	
-	<cfset var loc = {keyword = "#arguments.keyWord#/",appPattern = singularize(arguments.name) }/>
+	<cfset var loc = {keyword = "#arguments.keyWord#/", appPattern = singularize(arguments.name) }/>
 	
 	<cfif loc.keyword EQ "/">
 		<cfset loc.keyword = "" />
 	</cfif>
 	
-	<cfif arguments.multipleAppFolders>
+	<cfif arguments.singleAppFolder EQ "">
 		<cfset addRoute(name=arguments.name, pattern="#loc.keyWord#[#loc.appPattern#]/[controller]/[action]/[key]")>
 		<cfset addRoute(name=arguments.name, pattern="#loc.keyWord#[#loc.appPattern#]/[controller]/[action]")>
 		<cfset addRoute(name=arguments.name, pattern="#loc.keyWord#[#loc.appPattern#]/[controller]", action="index")>
 	<cfelse>
-		<!--- todo: doesn't work... might be a dead end... --->
 		<cfset loc.routeArguments = {
 			name=arguments.name,
-			pattern="#arguments.keyWord#[controller]/[action]/[key]",
-			"#loc.appPattern#" = "#loc.appPattern#"
+			pattern="#loc.keyWord#[controller]/[action]/[key]",
+			"#loc.appPattern#" = "#arguments.singleAppFolder#",
+			"path" = "#arguments.path#/#arguments.singleAppFolder#"
 		} />
 		
 		<cfset addRoute(argumentCollection = loc.routeArguments)>
@@ -32,7 +32,18 @@
 		<cfset addRoute(argumentCollection = loc.routeArguments)>
 	</cfif>
 	
-	<cfset this.mappings["/#arguments.name#"] = expandPath(arguments.path) />
+	<cfif arguments.path NEQ "">
+		<cfset this.mappings["/#arguments.name#"] = expandPath(arguments.path) />
+	</cfif>
+</cffunction>
+
+<cffunction name="importBigRigRoutes">
+	<cfargument name="bigRigSettingsFile" default="config/plugins/bigrig/appRoutes.cfm" />
+	<cfif fileExists(expandPath(arguments.bigRigSettingsFile))>
+		<cfinclude template="../../../#arguments.bigRigSettingsFile#" />
+	<cfelse>
+		<cfset session.flash.bigrigDoInstall=true />
+	</cfif>
 </cffunction>
 
 <cffunction name="$getPackageName">
@@ -83,14 +94,12 @@
 		
 		if(arguments.type == "partial") {
 			loc.controllerName = variables.wheels.name;
-			loc.fileName = loc.fileName = Spanexcluding(Reverse(ListFirst(Reverse(loc.fileName), "/")), ".") & ".cfm";
-			writeDump(loc);
+			loc.fileName = Spanexcluding(Reverse(ListFirst(Reverse(loc.fileName), "/")), ".") & ".cfm";
 		}
 		
 		if (ListLen(loc.controllerName, ".") == 3) {
 			loc.package = $getPackageName(loc.controllerName);
 			loc.app = $getAppName(loc.controllerName);
-			
 			
 			// fix the controller name for partials, now that we're done with referencing it
 			if(arguments.type == "partial") {
@@ -101,7 +110,7 @@
 			}
 			
 			loc.controllerPath = "/#loc.package#/#loc.app#/#loc.controllerPath#";
-			loc.controllerComponentPath = "/#loc.package#/#loc.app#/#loc.controllerComponentPath#";
+			loc.controllerComponentPath = "#loc.package#.#loc.app#.#loc.controllerComponentPath#";
 			loc.viewPath = "/#loc.package#/#loc.app#/#loc.viewPath#";
 			
 			if(listFind("layout,partial", arguments.type)) {
@@ -111,10 +120,6 @@
 			}
 		}
 		
-		if(listFind("partial",arguments.type)) {
-			writeDump(label="initController....",var=arguments);writeDump(loc);
-		}
-
 		return loc;
 	</cfscript>
 </cffunction>
@@ -125,7 +130,7 @@
 		var loc = {};
 
 		loc.fileName = arguments.name;
-		if (ListLen(loc.fileName, ".") == 3) {
+		if ($isBigRigRequest(loc.fileName)) {
 			loc.controllerName = loc.fileName;
 			loc.fileName = $getComponentName(loc.fileName);
 		}
@@ -141,7 +146,7 @@
 		loc.modelComponentPath = application.wheels.modelComponentPath;
 		
 		
-		if (ListLen(loc.controllerName, ".") == 3) {
+		if ($isBigRigRequest(loc.controllerName)) {
 			loc.package = $getPackageName(loc.controllerName);
 			loc.app = $getAppName(loc.controllerName);
 			
@@ -151,4 +156,35 @@
 		}
 		return loc;
 	</cfscript>
+</cffunction>
+
+<cffunction name="$getViewPath">
+	<cfargument name="controller" type="string" required="true" />
+	<cfargument name="action" type="string" required="true" />
+	
+	<cfset var loc = {} />
+	
+	<cfset loc = $getComponentInitInfo(arguments.controller) />
+	<cfset loc.fileName = arguments.action />
+	<cfset loc.folderName = listAppend(loc.controllerName, loc.folderName, "/")>
+	
+	<cfset loc.result = reReplace(listAppend(listAppend(reReplace(loc.viewPath, "^/", ""), loc.folderName, "/"), loc.fileName, "/"), "//", "/", "all") />
+
+	<cfif NOT reFind("\.cfm$", loc.result)>
+		<cfset loc.result &= ".cfm" />
+	</cfif>
+
+	<cfreturn loc.result />
+</cffunction>
+
+<cffunction name="$isBigRigRequest">
+	<cfargument name="controller">
+	
+	<cfset var result = false />
+	
+	<cfif listLen(arguments.controller, ".") EQ 3>
+		<cfset result = true />
+	</cfif>
+	
+	<cfreturn result />
 </cffunction>

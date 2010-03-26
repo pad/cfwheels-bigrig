@@ -1,4 +1,4 @@
-<cfcomponent extends="core.controllers.Wheels">
+<cfcomponent extends="Wheels">
 	<cffunction name="init">
 		<cfset filters("$verifyInstall,$restrictAccess,$viewInit") />
 	</cffunction>
@@ -8,7 +8,7 @@
 			<cfset application.wheels.bigrig = {} />
 		</cfif>
 		
-		<cfif NOT StructKeyExists(application.wheels.bigrig, "applicationFolders")>
+		<cfif NOT StructKeyExists(application.wheels.bigrig, "useAutoInstaller")>
 			<cfset flashInsert(bigrig='<p>You need to include the BigRig appRoutes.cfm in your config/routes.cfm file.</p><pre><code>&lt;cfinclude template="plugins/bigrig/appRoutes.cfm" /></code></pre><p><em>Or <a href="?reload=true">reload</a> wheels if you already added it.</em></p>') />
 		</cfif>
 	</cffunction>
@@ -26,18 +26,6 @@
 	
 	<cffunction name="$getAppDefinitions">
 		<cfset var loc = {returnStruct={appRoutes=[]},file=""} />
-		
-		<!--- check if the plugin settings exist in the config/plugins/bigrig folder if not, make the appRoute.cfm file with initial content --->
-		<cfif NOT fileExists(expandPath('config/plugins/bigrig/appRoutes.cfm'))>
-			<!--- check if the folder exists, if not make it --->
-			<cfif NOT directoryExists(expandPath("config/plugins/bigrig/"))>
-				<cfdirectory action="create" directory="#expandPath("config/plugins/bigrig")#" />
-			</cfif>
-			
-			<!--- add the bigrig.applicationFolders array to keep track of installed application locations --->
-			<cfset loc.returnStruct.file = "<!--- BigRig Applicaiton Routes --->#chr(13)#<cfset application.wheels.bigrig.applicationFolders=[]/>" />
-			<cffile action="write" file="#expandPath('config/plugins/bigrig/appRoutes.cfm')#" output="#loc.returnStruct.file#" />
-		</cfif>
 		
 		<!--- read the current bigrig appRoutes settings file for parsing --->
 		<cffile variable="loc.returnStruct.file" action="Read" file="#expandPath('config/plugins/bigrig/appRoutes.cfm')#" />

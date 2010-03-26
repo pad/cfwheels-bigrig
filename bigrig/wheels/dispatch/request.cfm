@@ -91,3 +91,48 @@
 	</cfscript>
 	<cfreturn Trim(request.wheels.response)>
 </cffunction>
+
+<cffunction name="$callAction" returntype="void" access="public" output="false">
+	<cfargument name="controller" type="any" required="true">
+	<cfargument name="controllerName" type="string" required="true">
+	<cfargument name="actionName" type="string" required="true">
+	<cfscript>
+		var loc = {};
+
+		if (Left(arguments.actionName, 1) == "$" || ListFindNoCase(application.wheels.protectedControllerMethods, arguments.actionName))
+			$throw(type="Wheels.ActionNotAllowed", message="You are not allowed to execute the `#arguments.actionName#` method as an action.", extendedInfo="Make sure your action does not have the same name as any of the built-in Wheels functions.");
+
+		if (StructKeyExists(arguments.controller, arguments.actionName))
+			$invoke(componentReference=arguments.controller, method=arguments.actionName);
+		if (!StructKeyExists(request.wheels, "response"))
+		{
+			// a render function has not been called yet so call it here
+			try
+			{
+				arguments.controller.renderPage();
+			}
+			catch(Any e)
+			{
+				loc.viewPath = $getViewPath(controller=arguments.controllerName, action=arguments.actionName);
+				if (FileExists(ExpandPath(loc.viewPath)) || FileExists(ExpandPath("/"&loc.viewPath)))
+				{
+					$throw(object=e);
+				}
+				else
+				{
+					if (application.wheels.showErrorInformation)
+					{
+						loc.viewPath = reverse(listRest(reverse(loc.viewPath), "/"));
+						$throw(type="Wheels.ViewNotFound", message="Could not find the view page for the `#arguments.actionName#` action in the `#arguments.controllerName#` controller.", extendedInfo="Create a file named `#LCase(arguments.actionName)#.cfm` in the `#loc.viewPath#` directory (create the directory as well if it doesn't already exist).");
+					}
+					else
+					{
+						$header(statusCode="404", statusText="Not Found");
+						$includeAndOutput(template="#application.wheels.eventPath#/onmissingtemplate.cfm");
+						$abort();
+					}
+				}
+			}
+		}
+	</cfscript>
+</cffunction>

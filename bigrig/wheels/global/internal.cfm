@@ -14,7 +14,7 @@
 			//// bigrig: ////
 			// if (FileExists(ExpandPath("#application.wheels.controllerPath#/#loc.fileName#.cfc")))
 			//	application.wheels.existingControllerFiles = ListAppend(application.wheels.existingControllerFiles, arguments.name);
-			if (FileExists(ExpandPath("#loc.controllerPath#/#loc.fileName#.cfc"))){
+			if (FileExists(ExpandPath("#loc.controllerPath#/#loc.fileName#.cfc")) || FileExists(ExpandPath(".#loc.controllerPath#/#loc.fileName#.cfc"))){
 				application.wheels.existingControllerFiles = ListAppend(application.wheels.existingControllerFiles, arguments.name);
 			}
 			//// :bigrig ////
@@ -56,13 +56,13 @@
 		//if (FileExists(ExpandPath("#application.wheels.modelPath#/#loc.fileName#.cfc")))
 			//application.wheels.existingModelFiles = ListAppend(application.wheels.existingModelFiles, arguments.name);
 		if (FileExists(ExpandPath("#loc.modelPath#/#loc.fileName#.cfc")))
-			application.wheels.existingModelFiles = ListAppend(application.wheels.existingModelFiles, loc.name);
+			application.wheels.existingModelFiles = ListAppend(application.wheels.existingModelFiles, arguments.name);
 		else
 			loc.fileName = "Model";
 		// application.wheels.models[arguments.name] = $createObjectFromRoot(path=application.wheels.modelComponentPath, fileName=loc.fileName, method="$initModelClass", name=arguments.name);
 		// loc.returnValue = application.wheels.models[arguments.name];
-		application.wheels.models[loc.name] = $createObjectFromRoot(path=loc.modelComponentPath, fileName=loc.fileName, method="$initModelClass", name=loc.name);
-		loc.returnValue = application.wheels.models[loc.name];
+		application.wheels.models[arguments.name] = $createObjectFromRoot(path=loc.modelComponentPath, fileName=loc.fileName, method="$initModelClass", name=arguments.name);
+		loc.returnValue = application.wheels.models[arguments.name];
 		//// :bigrig ////
 	</cfscript>
 	<cfreturn loc.returnValue>

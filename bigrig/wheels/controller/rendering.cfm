@@ -133,7 +133,6 @@
 				}
 			}
 		}
-
 		if (!StructKeyExists(loc, "returnValue")){
 			loc.returnValue = $includeAndReturnOutput(argumentCollection=arguments);
 		}

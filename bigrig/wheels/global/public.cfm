@@ -38,7 +38,9 @@
 		loc.returnValue = application.wheels.webPath & ListLast(request.cgi.script_name, "/");
 		
 		//// bigrig: ////
-		if (!Len(arguments.route) && listLen(loc.params.controller, ".") == 3) {
+		
+		// no route was requested, there is a matching route defined for this request and this request is for a BigRig controller
+		if (!Len(arguments.route) && StructKeyExists(loc.params, "route") && $isBigRigRequest(loc.params.controller)) {
 			arguments.route = loc.params.route;
 			arguments[singularize(arguments.route)] = loc.params[singularize(arguments.route)];
 			if(arguments.controller EQ "") {

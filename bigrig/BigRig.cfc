@@ -1,4 +1,4 @@
-<cfcomponent output="false">
+<cfcomponent output="false" mixin="application,controller,dispatch,model">
 
 	<cffunction name="init">
 		

@@ -1,0 +1,1 @@
+<cfoutput>#linkTo(action="config", controller="app")#</cfoutput>

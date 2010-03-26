@@ -7,4 +7,8 @@
 		
 		<cfset appRouteSettings = $getAppDefinitions() />
 	</cffunction>
+	
+	<cffunction name="save">
+		<cfset renderText("Sweet!")>
+	</cffunction>
 </cfcomponent>
