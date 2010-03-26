@@ -73,7 +73,6 @@
 	<cfargument name="fileName" type="string" required="true">
 	<cfargument name="method" type="string" required="true">
 	<cfscript>
-		//if(listFind("Wheels,Dispatch", arguments.fileName) == 0)
 		var loc = {};
 		arguments.returnVariable = "loc.returnValue";
 		arguments.component = arguments.path & "." & arguments.fileName;

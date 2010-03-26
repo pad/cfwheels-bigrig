@@ -57,7 +57,6 @@
 						else if (loc.groupValue != loc.query[arguments.$group][loc.i])
 						{
 							// we have a different group for this row so output what we have
-							writeDump(label="ouch", var=arguments);abort;
 							loc.returnValue = loc.returnValue & $includeAndReturnOutput(argumentCollection=arguments);
 							if (StructKeyExists(arguments, "$spacer"))
 								loc.returnValue = loc.returnValue & loc.tempSpacer;
@@ -79,7 +78,6 @@
 					// if we have anything left at the end we need to render it too
 					if (arguments.group.RecordCount > 0)
 					{
-						writeDump(label="more fun",var=arguments);abort;
 						loc.returnValue = loc.returnValue & $includeAndReturnOutput(argumentCollection=arguments);
 						if (StructKeyExists(arguments, "$spacer") && loc.i < loc.iEnd)
 							loc.returnValue = loc.returnValue & loc.tempSpacer;
@@ -100,7 +98,6 @@
 							loc.property = ListGetAt(loc.query.columnList, loc.j);
 							arguments[loc.property] = loc.query[loc.property][loc.i];
 						}
-						writeDump(label="this sucks",var=arguments);abort;
 						loc.returnValue = loc.returnValue & $includeAndReturnOutput(argumentCollection=arguments);
 						if (StructKeyExists(arguments, "$spacer") && loc.i < loc.iEnd)
 							loc.returnValue = loc.returnValue & arguments.$spacer;
@@ -126,7 +123,6 @@
 						if (StructKeyExists(loc.properties, loc.key))
 							StructDelete(loc.properties, loc.key);
 					StructAppend(arguments, loc.properties, true);
-					writeDump(var=arguments,label="sparta!!");abort;
 					loc.returnValue = loc.returnValue & $includeAndReturnOutput(argumentCollection=arguments);
 					if (StructKeyExists(arguments, "$spacer") && loc.i < loc.iEnd)
 						loc.returnValue = loc.returnValue & arguments.$spacer;

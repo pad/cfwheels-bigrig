@@ -7,10 +7,8 @@
 		// set route from incoming url, find a matching one and create the params struct
 		loc.route = $getRouteFromRequest();
 		loc.foundRoute = $findMatchingRoute(route=loc.route);
-
 		loc.params = $createParams(route=loc.route, foundRoute=loc.foundRoute);
-		//// bigrig: ////
-		//// :bigrig ////
+
 		// set params in the request scope as well so we can display it in the debug info outside of the controller context
 		request.wheels.params = loc.params;
 
@@ -34,6 +32,7 @@
 
 		// create the requested controller
 		loc.controller = $controller(loc.params.controller).$createControllerObject(loc.params);
+		
 		if (application.wheels.showDebugInformation)
 			$debugPoint("setup,beforeFilters");
 
@@ -113,7 +112,9 @@
 			}
 			catch(Any e)
 			{
+				//// bigrig: ////
 				loc.viewPath = $getViewPath(controller=arguments.controllerName, action=arguments.actionName);
+				//// :bigrig ////
 				if (FileExists(ExpandPath(loc.viewPath)) || FileExists(ExpandPath("/"&loc.viewPath)))
 				{
 					$throw(object=e);
@@ -122,7 +123,9 @@
 				{
 					if (application.wheels.showErrorInformation)
 					{
+						//// bigrig: ////
 						loc.viewPath = reverse(listRest(reverse(loc.viewPath), "/"));
+						//// :bigrig ////
 						$throw(type="Wheels.ViewNotFound", message="Could not find the view page for the `#arguments.actionName#` action in the `#arguments.controllerName#` controller.", extendedInfo="Create a file named `#LCase(arguments.actionName)#.cfm` in the `#loc.viewPath#` directory (create the directory as well if it doesn't already exist).");
 					}
 					else

@@ -38,7 +38,6 @@
 		loc.returnValue = application.wheels.webPath & ListLast(request.cgi.script_name, "/");
 		
 		//// bigrig: ////
-		
 		// no route was requested, there is a matching route defined for this request and this request is for a BigRig controller
 		if (!Len(arguments.route) && StructKeyExists(loc.params, "route") && $isBigRigRequest(loc.params.controller)) {
 			arguments.route = loc.params.route;
@@ -53,7 +52,6 @@
 		{
 			// link for a named route
 			loc.route = $findRoute(argumentCollection=arguments);
-
 			if (application.wheels.URLRewriting == "Off")
 			{
 				loc.returnValue = loc.returnValue & "?controller=" & REReplace(REReplace(loc.route.controller, "([A-Z])", "-\l\1", "all"), "^-", "", "one");
