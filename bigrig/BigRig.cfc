@@ -2,7 +2,7 @@
 
 	<cffunction name="init">
 		
-		<cfset this.version = "1.0,1.0.1,1.0.2">
+		<cfset this.version = "1.0,1.0.1,1.0.2,1.0.3">
 		<cfreturn this>
 		
 	</cffunction>

@@ -114,8 +114,9 @@
 			{
 				//// bigrig: ////
 				loc.viewPath = $getViewPath(controller=arguments.controllerName, action=arguments.actionName);
-				//// :bigrig ////
+				// if (FileExists(ExpandPath("#application.wheels.viewPath#/#LCase(arguments.controllerName)#/#LCase(arguments.actionName)#.cfm")))
 				if (FileExists(ExpandPath(loc.viewPath)) || FileExists(ExpandPath("/"&loc.viewPath)))
+				//// :bigrig ////
 				{
 					$throw(object=e);
 				}
@@ -125,8 +126,9 @@
 					{
 						//// bigrig: ////
 						loc.viewPath = reverse(listRest(reverse(loc.viewPath), "/"));
-						//// :bigrig ////
+						// $throw(type="Wheels.ViewNotFound", message="Could not find the view page for the `#arguments.actionName#` action in the `#arguments.controllerName#` controller.", extendedInfo="Create a file named `#LCase(arguments.actionName)#.cfm` in the `views/#LCase(arguments.controllerName)#` directory (create the directory as well if it doesn't already exist).");
 						$throw(type="Wheels.ViewNotFound", message="Could not find the view page for the `#arguments.actionName#` action in the `#arguments.controllerName#` controller.", extendedInfo="Create a file named `#LCase(arguments.actionName)#.cfm` in the `#loc.viewPath#` directory (create the directory as well if it doesn't already exist).");
+						//// :bigrig ////
 					}
 					else
 					{
