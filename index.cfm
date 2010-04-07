@@ -10,7 +10,7 @@
 
 <p>BigRig extends the Wheels convention for code organization, allowing you to implement your models, views and controllers in a <a target="_blank" href="http://wiki.github.com/pad/cfwheels-bigrig/site-structure">customized, nested structure</a>.</p>
 
-<p>BigRig folders each require supporting named routes and a mapping to function properly. There is a helper function, <cfoutput><code><a target="_blank" href="http://wiki.github.com/pad/cfwheels-bigrig/addrig">#bigRigHelperFunction#()</a></code></cfoutput>, that can set this up for you.</p>
+<p>BigRig folders each require supporting named routes, and if they are not placed in the webroot a supporting mapping is required to function properly. There is a helper function, <cfoutput><code><a target="_blank" href="http://wiki.github.com/pad/cfwheels-bigrig/addrig">#bigRigHelperFunction#()</a></code></cfoutput>, that can set up the base routes for you.</p>
 
 <hr/>
 
@@ -33,7 +33,7 @@
 	&lt;cfinclude template="../../../wheels/model.cfm"&gt;
 &lt;/cfcomponent&gt;</code></pre>
 	</li>
-	<li>Add a call to <cfoutput><code><a target="_blank" href="http://wiki.github.com/pad/cfwheels-bigrig/addrig">#bigRigHelperFunction#(<em>name, [path, keyword, singleAppFolder]</em>)</a></code></cfoutput>
+	<li>Add a call to <cfoutput><code><a target="_blank" href="http://wiki.github.com/pad/cfwheels-bigrig/addrig">#bigRigHelperFunction#(<em>name, [keyword, singleAppFolder]</em>)</a></code></cfoutput>
 		<h4><code>/config/routes.cfm</code></h4>
 		<pre><code>&lt;cfset <cfoutput>#bigrigHelperFunction#</cfoutput>(name="apps") /></code></pre>
 	
