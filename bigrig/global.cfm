@@ -37,8 +37,11 @@
 		if (ListLen(loc.fileName, "/") >= 2) {
 			loc.controllerName = listGetAt(loc.controllerName, 1, "/");
 			
-			if(ListLen(loc.controllerName, ".") == 3) {
+			if($isBigRigRequest(loc.controllerName)) {
 				loc.folderName = $getComponentName(loc.folderName);
+			}
+			else if($isBigRigRequest(variables.wheels.name)) {
+				loc.controllerName = $getPackageName(variables.wheels.name) & "." & $getAppName(variables.wheels.name) & "." & loc.controllerName;
 			}
 			// extracts the file part of the path and replace ending ".cfm";
 			loc.fileName = Spanexcluding(Reverse(ListFirst(Reverse(loc.fileName), "/")), ".") & ".cfm";;
@@ -49,7 +52,7 @@
 			loc.fileName = Spanexcluding(Reverse(ListFirst(Reverse(loc.fileName), "/")), ".") & ".cfm";
 		}
 		
-		if (ListLen(loc.controllerName, ".") == 3) {
+		if ($isBigRigRequest(loc.controllerName)) {
 			loc.package = $getPackageName(loc.controllerName);
 			loc.app = $getAppName(loc.controllerName);
 			
@@ -57,7 +60,7 @@
 			if(arguments.type == "partial") {
 				loc.controllerName = $getComponentName(loc.controllerName);
 			// fix the filename if it is still a 3 key value(for controllers)
-			} else if(ListLen(loc.fileName, ".") == 3) {
+			} else if($isBigRigRequest(loc.fileName)) {
 				loc.fileName = $getComponentName(loc.fileName);
 			}
 			
@@ -80,6 +83,7 @@
 	<cfargument name="name" type="string" required="true">
 	<cfscript>
 		var loc = {};
+		var temp = "";
 
 		loc.fileName = arguments.name;
 		if ($isBigRigRequest(loc.fileName)) {
@@ -88,11 +92,29 @@
 		}
 		else if (isDefined("variables.wheels.name"))
 		{
-			loc.controllerName = variables.wheels.name;
+			temp = $getRequestController();
+			
+			if($isBigRigRequest(temp) AND !$isBigRigRequest(variables.wheels.name))
+			{
+				loc.controllerName = $getPackageName(temp) & "." & $getAppName(temp) & "." & variables.wheels.name;
+			}
+			else
+			{
+				loc.controllerName = variables.wheels.name;
+			}
 		}
 		else if (isDefined("variables.wheels.class.name"))
 		{
-			loc.controllerName = variables.wheels.class.name;
+			temp = $getRequestController();
+
+			if($isBigRigRequest(temp))
+			{
+				loc.controllerName = $getPackageName(temp) & "." & $getAppName(temp) & "." & variables.wheels.class.name;
+			}
+			else
+			{
+				loc.controllerName = variables.wheels.class.name;
+			}
 		}
 		loc.modelPath = application.wheels.modelPath;
 		loc.modelComponentPath = application.wheels.modelComponentPath;
@@ -104,10 +126,19 @@
 			
 			loc.name = "#loc.package#.#loc.app#.#loc.fileName#";
 			loc.modelPath = "/#loc.package#/#loc.app#/#loc.modelPath#";
-			loc.modelComponentPath = "/#loc.package#/#loc.app#/#loc.modelComponentPath#";
+			loc.modelComponentPath = "#loc.package#.#loc.app#.#loc.modelComponentPath#";
 		}
+
 		return loc;
 	</cfscript>
+</cffunction>
+
+<cffunction name="$getRequestController">
+	<cfargument name="requestMetaDataName" default="#variables.$wheels.metadata.name#">
+	<cfargument name="root" default="#application.wheels.plugins.bigrig.wheelsroot#">
+	<cfargument name="tail" default="Wheels">
+
+	<cfreturn rereplace(arguments.requestMetaDataName, "#arguments.root#\.?(.*)\.#arguments.tail#$", "\1")>
 </cffunction>
 
 <cffunction name="$getViewPath">

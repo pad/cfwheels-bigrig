@@ -31,6 +31,11 @@
 			//$include(template="#application.wheels.viewPath#/#arguments.params.controller#/helpers.cfm");
 			$include(template="#loc.viewPath#/#arguments.params.controller#/helpers.cfm");
 		}
+		
+		// get the app helper
+		if($isBigRigRequest(loc.controllerName) && fileExists(expandPath("#loc.viewPath#/helpers.cfm"))) {
+			$include(template="#loc.viewPath#/helpers.cfm");
+		}
 		//// :bigrig ////
 		
 		loc.executeArgs = {};

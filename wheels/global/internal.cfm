@@ -5,6 +5,11 @@
 		// var loc = {};
 		// loc.fileName = capitalize(arguments.name);
 		var loc = $getComponentInitInfo(arguments.name);
+		
+		if(loc.fileName EQ ""){
+			writeDump(loc);abort;
+		}
+		
 		loc.fileName = capitalize(loc.fileName);
 		//// :bigrig ////
 		
@@ -61,10 +66,13 @@
 			loc.fileName = "Model";
 		// application.wheels.models[arguments.name] = $createObjectFromRoot(path=application.wheels.modelComponentPath, fileName=loc.fileName, method="$initModelClass", name=arguments.name);
 		// loc.returnValue = application.wheels.models[arguments.name];
-		application.wheels.models[arguments.name] = $createObjectFromRoot(path=loc.modelComponentPath, fileName=loc.fileName, method="$initModelClass", name=arguments.name);
+		application.wheels.models[arguments.name] = $createObjectFromRoot(path=loc.modelComponentPath, fileName=loc.fileName, method="$initModelClass", name=loc.fileName);
+		
 		loc.returnValue = application.wheels.models[arguments.name];
 		//// :bigrig ////
 	</cfscript>
+	
+	
 	<cfreturn loc.returnValue>
 </cffunction>
 
@@ -72,6 +80,7 @@
 	<cfargument name="path" type="string" required="true">
 	<cfargument name="fileName" type="string" required="true">
 	<cfargument name="method" type="string" required="true">
+
 	<cfscript>
 		var loc = {};
 		arguments.returnVariable = "loc.returnValue";

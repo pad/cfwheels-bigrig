@@ -8,7 +8,7 @@
 		// loc.fileName = capitalize(variables.wheels.class.name);
 		var loc = $getModelInitInfo(variables.wheels.class.name);
 		loc.fileName = capitalize(loc.fileName);
-		
+		if(loc.fileName == "") { writeDump(loc);abort; }
 		if (!ListFindNoCase(application.wheels.existingModelFiles, variables.wheels.class.name))
 			loc.fileName = "Model";
 		// loc.returnValue = $createObjectFromRoot(path=application.wheels.modelComponentPath, fileName=loc.fileName, method="$initModelObject", name=variables.wheels.class.name, properties=arguments.properties, persisted=arguments.persisted, row=arguments.row);
