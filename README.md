@@ -1,8 +1,10 @@
+# BigRig
+
 This is a pre-alpha release with some critical limitations. Don't use BigRig if you expect it to work for your own projects at this point.
 
 For now, there is some initial configuration to get this all working. Mostly this is working towards a proof of concept for running multiple Wheels applications on a single server.
 
-h2. Installation
+## Installation
 Drop zip in plugins folder(you can download the latest tag and rename it to just BigRig-someversionnumberfromtag.zip)
 
 Create a new folder to hold your rigs in your server's webroot(assuming that is where wheels is installed) - these parent folders will be referred to as BigRig folders.
@@ -15,7 +17,7 @@ Add a call to addRig(name="#bigRigFolderName#") to your config/routes.cfm file t
 
 Any routes, settings etc in your rigs currently need to be moved to the main config/routes|settings|etc.cfm files... routes have some extra parameters that need to be set in order to work(see wiki). Looking into a solution for this still.
 
-h2. Known Issues and Limitations
+## Known Issues and Limitations
 
 Datasources must be shared with all apps, or set independently in each model(hoping a better solution for this will present itself).
 
